@@ -1,0 +1,15 @@
+{
+  "name": "Korean 1000",
+  "short_name": "Korean1000",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f8f9fa",
+  "theme_color": "#37474f",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/197/197581.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

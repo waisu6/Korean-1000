@@ -4,10 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Korean 1000: Master the Basics</title>
+    
+    <!-- PWA Settings -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#37474f">
+
     <link rel="stylesheet" href="style.css">
-    <!-- Load vocabulary data first, then engine -->
     <script src="vocab.js" defer></script>
     <script src="script.js" defer></script>
+
+    <!-- Register Offline Service Worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js');
+        });
+      }
+    </script>
 </head>
 <body>
 
