@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korean 1000: Master the Basics</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Load vocabulary data first, then engine -->
+    <script src="vocab.js" defer></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <div class="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+
+    <!-- Top Left Controls: Mute & Hamburger Menu -->
+    <div class="top-nav-left">
+        <button id="hamburger-btn" class="nav-icon-btn" onclick="toggleNavMenu()" aria-label="Open Navigation">
+            <svg viewBox="0 0 24 24" class="svg-icon">
+                <path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z" fill="currentColor"/>
+            </svg>
+        </button>
+
+        <button id="mute-btn" class="nav-icon-btn" onclick="toggleMute()" aria-label="Toggle Mute">
+            <svg id="icon-unmuted" viewBox="0 0 24 24" class="svg-icon">
+                <path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/>
+                <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" fill="currentColor"/>
+                <path d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"/>
+            </svg>
+            <svg id="icon-muted" viewBox="0 0 24 24" class="svg-icon hidden">
+                <path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/>
+                <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" fill="currentColor"/>
+                <path d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"/>
+                <line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Navigation Slide-out Drawer -->
+    <div id="nav-overlay" class="nav-overlay hidden" onclick="toggleNavMenu()"></div>
+    <nav id="nav-drawer" class="nav-drawer">
+        <div class="nav-drawer-header">
+            <h3>Korean 1000</h3>
+            <button class="nav-close-btn" onclick="toggleNavMenu()">&times;</button>
+        </div>
+        <ul class="nav-links">
+            <li><button class="nav-link-btn active" id="nav-study-btn" onclick="switchMainView('study')">Study</button></li>
+            <li><button class="nav-link-btn" id="nav-library-btn" onclick="switchMainView('library')">Library</button></li>
+        </ul>
+    </nav>
+    
+
+    <!-- MAIN VIEW: STUDY / QUIZ -->
+    <main id="study-view" class="container">
+        <h2 id="mode-title">Study Mode</h2>
+
+        <div class="batch-filter-container">
+            <strong>Active Batches:</strong>
+            <div class="batch-grid" id="batch-grid"></div>
+        </div>
+
+        <!-- Clues, Direction & Hear Again Row -->
+        <div class="mode-action-row">
+            <!-- Choseong Clue Toggle -->
+            <label class="toggle-container" for="choseong-toggle">
+                <input type="checkbox" id="choseong-toggle" onchange="toggleChoseongClue()"> 
+                <span>초성 Clues</span>
+            </label>
+
+            <!-- Learning Direction Toggle Button -->
+            <button type="button" id="direction-toggle-btn" onclick="toggleDirection()" class="switch-mode-btn">
+                Mode: <strong id="direction-label">KR → EN</strong>
+            </button>
+
+            <button type="button" onclick="replayCurrentWord()" class="hear-again-btn" title="Replay Pronunciation">
+                <svg viewBox="0 0 24 24" class="inline-audio-icon">
+                    <path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/>
+                    <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" fill="currentColor"/>
+                </svg>
+                <span>Hear Again</span>
+            </button>
+        </div>
+        
+        <div class="card" id="main-card" onclick="flipCard()">
+            <div class="korean" id="display-korean">...</div>
+            <div class="choseong-clue hidden" id="display-choseong"></div>
+            <div class="english hidden" id="display-english">...</div>
+        </div>
+
+
+
+        <!-- Mode & Typing Challenge Row -->
+        <div class="mode-action-row">
+            <label class="toggle-container" id="typing-toggle-container" for="writing-mode-toggle">
+                <input type="checkbox" id="writing-mode-toggle" onchange="toggleWritingMode()"> 
+                <span>Enable Typing Challenge</span>
+            </label>
+
+            <button type="button" onclick="toggleGameMode()" class="switch-mode-btn">
+                Switch to <span id="next-mode-label">Quiz</span> Mode
+            </button>
+        </div>
+
+        <div class="typing-area" id="typing-area">
+            <input type="text" id="user-input" placeholder="Type meaning..." autocomplete="off">
+            <button class="btn-primary" onclick="checkInputAnswer()">Check Answer</button>
+        </div>
+
+        <!-- Study Mode Controls Container -->
+        <div id="study-controls">
+            <!-- Dedicated Flip Card Button -->
+            <button type="button" id="flip-card-btn" class="flip-card-btn" onclick="flipCard()">
+                <svg viewBox="0 0 24 24" class="inline-flip-icon">
+                    <path d="M7 7h10v2l4-3-4-3v2H5a2 2 0 0 0-2 2v7h2V7zm10 10H7v-2l-4 3 4 3v-2h12a2 2 0 0 0 2-2v-7h-2v7z" fill="currentColor"/>
+                </svg>
+                <span>Flip Card / Show Answer</span>
+            </button>
+
+            <!-- Anki-style 4-Grade Rating Controls -->
+            <div class="anki-btn-group">
+                <button type="button" class="btn-again" onclick="rateWord('again')">
+                    <span class="btn-title">Again</span>
+                    <span class="btn-sub">Reset</span>
+                </button>
+                <button type="button" class="btn-hard" onclick="rateWord('hard')">
+                    <span class="btn-title">Hard</span>
+                    <span class="btn-sub">+1</span>
+                </button>
+                <button type="button" class="btn-good" onclick="rateWord('good')">
+                    <span class="btn-title">Good</span>
+                    <span class="btn-sub">+2</span>
+                </button>
+                <button type="button" class="btn-easy" onclick="rateWord('easy')">
+                    <span class="btn-title">Easy</span>
+                    <span class="btn-sub">+3</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="quiz-options" class="quiz-options hidden"></div>
+
+        <div class="stats">
+            Mastered in Selection: <span id="mastered-count">0</span> / <span id="total-count">0</span>
+        </div>
+        
+        <!-- Collapsible Root / Etymology Lesson -->
+        <details id="root-lesson-accordion" class="root-accordion hidden">
+            <summary class="root-summary">
+                <span id="root-badge" class="root-badge">Hanja Root</span>
+                <span id="root-summary-title">Root Breakdown</span>
+            </summary>
+            <div id="root-lesson-body" class="root-body">
+                <!-- Content dynamically populated -->
+            </div>
+        </details>
+    </main>
+
+    <!-- MAIN VIEW: LIBRARY -->
+    <main id="library-view" class="container hidden">
+        <h2>Vocabulary Library</h2>
+        
+        <!-- Controls: Grouping, Sorting & Search -->
+        <div class="library-controls-card">
+            <!-- Search Bar -->
+            <div class="filter-item search-bar-item">
+                <label for="lib-search-input">Search:</label>
+                <input 
+                    type="text" 
+                    id="lib-search-input" 
+                    placeholder="Search Korean, English, or Romanization..." 
+                    oninput="renderLibrary()"
+                    autocomplete="off"
+                >
+            </div>
+
+            <div class="filter-item">
+                <label for="lib-group-select">Display:</label>
+                <select id="lib-group-select" onchange="renderLibrary()">
+                    <option value="batches">Grouped by Batches</option>
+                    <option value="all">All Words (Single List)</option>
+                </select>
+            </div>
+            
+            <div class="filter-item">
+                <label for="lib-sort-select">Sort by:</label>
+                <select id="lib-sort-select" onchange="renderLibrary()">
+                    <option value="default">Default Order</option>
+                    <option value="seen-desc">Times Seen (High → Low)</option>
+                    <option value="seen-asc">Times Seen (Low → High)</option>
+                    <option value="correct-desc">Correct Count (High → Low)</option>
+                    <option value="correct-pct-desc">Correct % (High → Low)</option>
+                    <option value="incorrect-desc">Incorrect Count (High → Low)</option>
+                    <option value="incorrect-pct-desc">Incorrect % (High → Low)</option>
+                </select>
+            </div>
+            <!-- Reset Stats Button -->
+            <div class="filter-item">
+                <button type="button" class="btn-reset-stats" onclick="resetAllStats()">
+                    <svg viewBox="0 0 24 24" class="inline-reset-icon">
+                        <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z" fill="currentColor"/>
+                    </svg>
+                    <span>Reset All Stats</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Library Content Table -->
+        <div id="library-content" class="library-content"></div>
+    </main>
+
+</body>
+</html>
